@@ -1,16 +1,17 @@
 <?php
     include_once("connect.php");
+    include_once("session.php");
     include_once("foreignkeys.php");
     
-    if (!isset($_SESSION)) {
-        session_start();
-    }
-    
+    $editID = 0;
+    if (isset($_SESSION["edit"]) == "budget" && isset($_SESSION["edit_ID"])) $editID = $_SESSION["edit_ID"];
+
     $id = $_SESSION["id"];
 
-    $sql = "SELECT `Budget_Expense`, `Amount`, `ExpenseType_ID`, `Source_ID`, `Frequency_ID` FROM Budget_Log WHERE `User_ID` = $id";
+    $sql = "SELECT `ID`, `Update_Date`, `Budget_Expense`, `Amount`, `ExpenseType_ID`, `Source_ID`, `Frequency_ID` FROM Budget WHERE `User_ID` = $id";
     $result = mysqli_query($conn, $sql);
 
+    echo '<h2>Budget</h2>';
     echo '<table>';
     echo '<tr><th>Budget</th>';
     echo '<th>Amount</th>';
@@ -22,16 +23,94 @@
         while($row = mysqli_fetch_assoc($result)) {
             $expenseType = getExpenseType($conn, $row["ExpenseType_ID"]);
             $assetSource = getAssetSource($conn, $row["Source_ID"]);
-            $frequency = getFrequency($conn, $row["Source_ID"]);
+            $frequency = getFrequency($conn, $row["Frequency_ID"]);
 
-            echo '<tr><td>' . $row["Budget_Expense"] . '</td>';
-            echo '<td>P ' . $row["Amount"] . '</td>';
-            echo '<td>' . $expenseType . '</td>';
-            echo '<td>' . $assetSource . '</td>';
-            echo '<td>' . $frequency . '</td></tr>';
+            if ($page == "budget" && $row["ID"] == $editID) {
+                echo '<form action="update.php" method="POST">';
+                    echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
+                    echo '<input type="hidden" name="date" value="' . $row["Update_Date"] . '">';
+                    echo '<tr><td><input type="text" name="budgetExpense" value="' . $row["Budget_Expense"] . '" /></td>';
+                    echo '<td>P <input type="text" name="amount" value="' . $row["Amount"] . '" /></td>';
+
+                    echo '<td><select name="type">';
+                    $ctr = 1;
+                    foreach (expenseTypes($conn) as $expense) {
+                        if ($expenseType == $expense) echo '<option value="'. $ctr++ . '" selected>' . $expense . '</option>';
+                        else echo '<option value="'. $ctr++ . '">' . $expense . '</option>';
+                    }
+                    echo '</select></td>';
+
+                    echo '<td><select name="source">';
+                    foreach (sourceFunds($conn, $_SESSION["id"]) as $id => $sourceFund) {
+                        if ($assetSource == $sourceFund) echo '<option value="'. $id . '" selected>' . $sourceFund . '</option>';
+                        else echo '<option value="'. $id . '">' . $sourceFund . '</option>';
+                    }
+                    echo '</select></td>';
+
+                    echo '<td><select name="frequency">';
+                    $ctr = 1;
+                    foreach (frequencies($conn) as $frequent) {
+                        if ($frequency == $frequent) echo '<option value="'. $ctr++ . '" selected>' . $frequent . '</option>';
+                        else echo '<option value="'. $ctr++ . '">' . $frequent . '</option>';
+                    }
+                    echo '</select></td>';
+
+                    echo '<td><button type="submit" name="budget">Update</button></td>';
+                    echo '<td><button name="cancel">Cancel</button></td></tr>';
+                echo '</form>';
+            } else {
+                echo '<tr><td>' . $row["Budget_Expense"] . '</td>';
+                echo '<td>P ' . $row["Amount"] . '</td>';
+                echo '<td>' . $expenseType . '</td>';
+                echo '<td>' . $assetSource . '</td>';
+                echo '<td>' . $frequency . '</td>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=budget"><button name="budget">Edit</button></a></td></tr>';
+            }
         }
     } else {
         echo '<tr><td colspan="5">0 results</td></tr>';
     }
-    echo '</table>';
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    
+    <body>
+        <form action="insert.php" method="POST">
+            <?php
+                echo '<tr><td><input type="text" name="budgetExpense" placeholder="Budget" required /></td>';
+                echo '<td>P <input type="text" name="amount" placeholder="Amount" required /></td>';
+
+                echo '<td><select name="type" required>';
+                $ctr = 1;
+                foreach (expenseTypes($conn) as $expense) {
+                    echo '<option value="'. $ctr++ . '">' . $expense . '</option>';
+                }
+                echo '<option class="placeholder" value="0" selected disabled hidden>Kind of Expenses</option>';
+                echo '</select></td>';
+
+                echo '<td><select name="source" required>';
+                foreach (sourceFunds($conn, $id) as $id => $sourceFund) {
+                    echo '<option value="'. $id . '">' . $sourceFund . '</option>';
+                }
+                echo '<option class="placeholder" value="0" selected disabled hidden>Source Fund</option>';
+                echo '</select></td>';
+
+                echo '<td><select name="frequency" required>';
+                $ctr = 1;
+                foreach (frequencies($conn) as $frequency) {
+                    echo '<option value="'. $ctr++ . '">' . $frequency . '</option>';
+                }
+                echo '<option class="placeholder" value="0" selected disabled hidden>Frequency</option>';
+                echo '</select></td>';
+
+                echo '<td><button type="submit" name="budget">Add</button></td></tr>';
+            ?>
+        </form></table>
+    </body>
+</html>

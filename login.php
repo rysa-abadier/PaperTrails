@@ -1,7 +1,6 @@
 <?php
-    session_start();
-
     include_once("connect.php");
+    include_once("session.php");
     
     if (isset($_SESSION["invalid"])) {
         echo '<script>alert("Invalid password! Please try again.");</script>';
@@ -26,7 +25,7 @@
             if (password_verify($pass, $row['Password'])) {
                 $_SESSION["id"] = (int) $row['ID'];
                 $_SESSION["name"] = $row['First_Name'] . ' ' . $row['Last_Name'];
-                $_SESSION["login"] = true;
+                $_SESSION["success"] = true;
                 header("Location: dashboard.php");
                 exit();
             } else {
@@ -46,27 +45,3 @@
 
     mysqli_close($conn);
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login</title>
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    
-    <body>
-        <form action="index.php" method="POST">
-            <label>Email:</label><br>
-            <input type="text" name="email" id="email" required /><br>
-
-            <label>Password:</label><br>
-            <input type="password" name="password" id="password" required /><br>
-
-            <button type="submit" name="login">Login</button>
-            <button name="register">Register</button>
-        </form>
-
-    </body>
-</html>
