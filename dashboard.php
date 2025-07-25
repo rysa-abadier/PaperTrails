@@ -14,7 +14,12 @@
     } else if (isset($_SESSION["update"])) {
         echo '<script>alert("Log record update successful!");</script>';
         unset($_SESSION['update']);
+    } else if (isset($_SESSION["delete"])) {
+        echo '<script>alert("Record delete successful!");</script>';
+        unset($_SESSION['delete']);
     }
+
+    var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -36,19 +41,19 @@
             echo '</div>';
 
             echo '<div>';
-                include("budget.php");
+                include_once("budget.php");
             echo '</div>';
 
             echo '<div><h2>Funds</h2>'; 
-                include("sourcefunds.php");
+                include_once("sourcefunds.php");
             echo '</div>';
 
             echo '<div><h2>Wishlist</h2>'; 
-                include("wishlist.php");
+                include_once("wishlist.php");
             echo '</div>';
 
             echo '<div><h2>Income</h2>'; 
-                include("income.php");
+                include_once("income.php");
             echo '</div>';
         ?>
     </body>

@@ -28,7 +28,7 @@
                 echo '<form action="update.php" method="POST">';
                     echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
                     echo '<tr><td><input type="text" name="name" value="' . $row["Name"] . '" /></td>';
-                    echo '<td>P <input type="text" name="amount" value="' . $row["Amount"] . '" /></td>';
+                    echo '<td>P ' . $row["Amount"] . '</td>';
 
                     echo '<td><select name="type" required>';
                     $ctr = 1;
@@ -45,7 +45,8 @@
                 echo '<tr><td>' . $row["Name"] . '</td>';
                 echo '<td>P ' . $row["Amount"] . '</td>';
                 echo '<td>' . $assetType . '</td>';
-                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=sourceFunds"><button name="sourceFunds">Edit</button></a></td></tr>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=sourceFunds"><button name="sourceFunds">Edit</button></a></td>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="delete.php?id=' . $row["ID"] . '&page=sourceFunds"><button name="sourceFunds">Delete</button></a></td></tr>';
             }
         }
     } else {

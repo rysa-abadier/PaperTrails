@@ -7,6 +7,10 @@ form, table {
     font-family: 'Courier New', Courier, monospace;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 button{
     margin: 5px 5px 5px 0;
     padding: 8px 12px;
@@ -21,4 +25,8 @@ input, select {
 
 ::placeholder, select.placeholder option[disabled] {
     font: italic 14px Arial, sans-serif;
+}
+
+table tr[data-id]:hover {
+    background-color: gainsboro;
 }

@@ -4,7 +4,8 @@
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        return $row["Name"];
+        if ($row > 0) return $row["Name"];
+        else return deleteLogs($conn, $id);
     }
 
     function getAssetSource($conn, $id) {
@@ -12,7 +13,8 @@
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        return $row["Name"];
+        if ($row > 0) return $row["Name"];
+        else return deleteLogs($conn, $id);
     }
 
     function getFrequency($conn, $id) {
@@ -20,7 +22,8 @@
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        return $row["Name"];
+        if ($row > 0) return $row["Name"];
+        else return deleteLogs($conn, $id);
     }
 
     function getAssetType($conn, $id) {
@@ -28,7 +31,8 @@
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        return $row["Name"];
+        if ($row > 0) return $row["Name"];
+        else return deleteLogs($conn, $id);
     }
 
     function expenseTypes($conn) {
@@ -89,5 +93,13 @@
         }
 
         return $assets;
+    }
+
+    function deleteLogs($conn, $id) {
+        $sql = "SELECT `Deleted_Name` FROM Delete_Log WHERE `Deleted_ID` = $id";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+
+        return $row["Deleted_Name"];
     }
 ?>

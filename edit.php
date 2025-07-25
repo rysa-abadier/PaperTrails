@@ -1,7 +1,6 @@
 <?php
     include_once("session.php");
 
-    $sessionID = $_SESSION["id"];
     $id = $_GET["id"];
     $page = $_GET["page"];
 

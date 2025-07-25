@@ -32,8 +32,9 @@
                 echo '<form action="update.php" method="POST">';
                     echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
                     echo '<input type="hidden" name="date" value="' . $row["Expense_Date"] . '">';
+                    echo '<input type="hidden" name="initial" value="' . $row["Amount"] . '">';
                     echo '<tr><td>' . $row["Expense_Date"] . '</td>';
-                    echo '<td>P <input type="text" name="amount" value="' . $row["Amount"] . '" /></td>';
+                    echo '<td>P <input type="text" name="final" value="' . $row["Amount"] . '" /></td>';
                     echo '<td><input type="text" name="expense" value="' . $row["Expense"] . '" /></td>';
                     
                     echo '<td><select name="type">';

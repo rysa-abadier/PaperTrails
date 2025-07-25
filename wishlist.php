@@ -36,7 +36,8 @@
                 echo '<tr><td>' . $row["Item"] . '</td>';
                 echo '<td>P ' . $row["Amount"] . '</td>';
                 echo '<td>' . $row["Shop"] . '</td>';
-                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=wishlist"><button name="wishlist">Edit</button></a></td></tr>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=wishlist"><button name="wishlist">Edit</button></a></td>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="delete.php?id=' . $row["ID"] . '&page=wishlist"><button name="wishlist">Delete</button></a></td></tr>';
             }
         }
     } else {

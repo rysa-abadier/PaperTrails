@@ -4,17 +4,22 @@
     include_once("foreignkeys.php");
     
     $editID = 0;
-    if (isset($_SESSION["edit"]) == "budget" && isset($_SESSION["edit_ID"])) $editID = $_SESSION["edit_ID"];
+    $page = "";
+    if (isset($_SESSION["edit"]) && isset($_SESSION["edit_ID"])) {
+        $editID = $_SESSION["edit_ID"];
+        $page = $_SESSION["edit"];
+    }
 
     $id = $_SESSION["id"];
 
-    $sql = "SELECT `ID`, `Update_Date`, `Budget_Expense`, `Amount`, `ExpenseType_ID`, `Source_ID`, `Frequency_ID` FROM Budget WHERE `User_ID` = $id";
+    $sql = "SELECT `ID`, `Update_Date`, `Budget_Expense`, `Amount`, `Total_Budget`, `ExpenseType_ID`, `Source_ID`, `Frequency_ID` FROM Budget WHERE `User_ID` = $id";
     $result = mysqli_query($conn, $sql);
 
     echo '<h2>Budget</h2>';
     echo '<table>';
-    echo '<tr><th>Budget</th>';
-    echo '<th>Amount</th>';
+    echo '<tr><th>Budget Name</th>';
+    echo '<th>Saved</th>';
+    echo '<th>Total Budget</th>';
     echo '<th>Kind of Expenses</th>';
     echo '<th>Source Fund</th>';
     echo '<th>Frequency</th></tr>';
@@ -29,8 +34,10 @@
                 echo '<form action="update.php" method="POST">';
                     echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
                     echo '<input type="hidden" name="date" value="' . $row["Update_Date"] . '">';
+                    echo '<input type="hidden" name="initial" value="' . $row["Amount"] . '">';
                     echo '<tr><td><input type="text" name="budgetExpense" value="' . $row["Budget_Expense"] . '" /></td>';
-                    echo '<td>P <input type="text" name="amount" value="' . $row["Amount"] . '" /></td>';
+                    echo '<td>P <input type="text" name="final" value="' . $row["Amount"] . '" /></td>';
+                    echo '<td>P <input type="text" name="total" value="' . $row["Total_Budget"] . '" /></td>';
 
                     echo '<td><select name="type">';
                     $ctr = 1;
@@ -61,10 +68,12 @@
             } else {
                 echo '<tr><td>' . $row["Budget_Expense"] . '</td>';
                 echo '<td>P ' . $row["Amount"] . '</td>';
+                echo '<td>P ' . $row["Total_Budget"] . '</td>';
                 echo '<td>' . $expenseType . '</td>';
                 echo '<td>' . $assetSource . '</td>';
                 echo '<td>' . $frequency . '</td>';
-                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=budget"><button name="budget">Edit</button></a></td></tr>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=budget"><button name="budget">Edit</button></a></td>';
+                echo '<td><a style="text-decoration: none; color: inherit;" href="delete.php?id=' . $row["ID"] . '&page=budget"><button name="budget">Delete</button></a></td></tr>';
             }
         }
     } else {
@@ -84,7 +93,8 @@
         <form action="insert.php" method="POST">
             <?php
                 echo '<tr><td><input type="text" name="budgetExpense" placeholder="Budget" required /></td>';
-                echo '<td>P <input type="text" name="amount" placeholder="Amount" required /></td>';
+                echo '<td>P <input type="text" name="saved" placeholder="Saved" /></td>';
+                echo '<td>P <input type="text" name="total" placeholder="Total Budget" required /></td>';
 
                 echo '<td><select name="type" required>';
                 $ctr = 1;

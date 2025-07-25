@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jul 23, 2025 at 03:15 PM
+-- Generation Time: Jul 25, 2025 at 11:42 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,13 +46,14 @@ INSERT INTO `assets` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `budget_log`
+-- Table structure for table `budget`
 --
 
-CREATE TABLE `budget_log` (
+CREATE TABLE `budget` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `amount` decimal(12,2) NOT NULL,
+  `total_budget` decimal(12,2) NOT NULL,
   `budget_expense` varchar(255) NOT NULL,
   `expensetype_id` int(11) NOT NULL,
   `source_id` int(11) NOT NULL,
@@ -61,11 +62,12 @@ CREATE TABLE `budget_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `budget_log`
+-- Dumping data for table `budget`
 --
 
-INSERT INTO `budget_log` (`id`, `user_id`, `amount`, `budget_expense`, `expensetype_id`, `source_id`, `frequency_id`, `update_date`) VALUES
-(1, 1, 179.00, 'Data', 7, 1, 3, '2025-07-23');
+INSERT INTO `budget` (`id`, `user_id`, `amount`, `total_budget`, `budget_expense`, `expensetype_id`, `source_id`, `frequency_id`, `update_date`) VALUES
+(1, 1, 10.00, 179.00, 'Data', 7, 1, 3, '2025-07-23'),
+(2, 1, 100.00, 200.00, 'pookie', 8, 2, 2, '2025-07-24');
 
 -- --------------------------------------------------------
 
@@ -77,7 +79,7 @@ CREATE TABLE `dailyexpense_log` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `amount` decimal(12,2) NOT NULL,
-  `expense` varchar(255) DEFAULT NULL,
+  `expense` varchar(255) DEFAULT '—',
   `source_id` int(11) NOT NULL,
   `expensetype_id` int(11) NOT NULL,
   `expense_date` date NOT NULL DEFAULT current_timestamp()
@@ -88,7 +90,21 @@ CREATE TABLE `dailyexpense_log` (
 --
 
 INSERT INTO `dailyexpense_log` (`id`, `user_id`, `amount`, `expense`, `source_id`, `expensetype_id`, `expense_date`) VALUES
-(1, 1, 179.00, 'Data', 1, 7, '2025-07-23');
+(1, 1, 10.00, 'Data', 1, 7, '2025-07-23'),
+(2, 1, 100.00, 'pookie', 2, 8, '2025-07-23');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delete_log`
+--
+
+CREATE TABLE `delete_log` (
+  `id` int(11) NOT NULL,
+  `deleted_id` int(11) NOT NULL,
+  `deleted_name` varchar(255) NOT NULL,
+  `table` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -147,18 +163,41 @@ INSERT INTO `frequency` (`id`, `name`) VALUES
 CREATE TABLE `income_log` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
   `amount` decimal(12,2) NOT NULL,
-  `asset_id` int(11) NOT NULL,
-  `modified_date` date NOT NULL DEFAULT current_timestamp()
+  `income` varchar(255) DEFAULT '—',
+  `source_id` int(11) NOT NULL,
+  `income_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `income_log`
 --
 
-INSERT INTO `income_log` (`id`, `user_id`, `name`, `amount`, `asset_id`, `modified_date`) VALUES
-(1, 1, 'GCash', 300.00, 2, '2025-07-23');
+INSERT INTO `income_log` (`id`, `user_id`, `amount`, `income`, `source_id`, `income_date`) VALUES
+(1, 1, 300.00, '—', 1, '2025-07-23'),
+(2, 1, 2500.00, '—', 2, '2025-07-23');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `source_fund`
+--
+
+CREATE TABLE `source_fund` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `amount` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `asset_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `source_fund`
+--
+
+INSERT INTO `source_fund` (`id`, `user_id`, `name`, `amount`, `asset_id`) VALUES
+(1, 1, 'GCash', 290.00, 2),
+(2, 1, 'Allowance', 2400.00, 1);
 
 -- --------------------------------------------------------
 
@@ -182,6 +221,28 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`) VALUE
 (1, 'Rysa', 'Abadier', 'rysa.abadier@ciit.edu.ph', '$2y$10$Wzr8z72Ff8cZJCDrgcvtSOPvfMze9Ucpk76kQLrvLKzCLvKvlDqGK'),
 (2, 'Noah', 'Peñaranda', 'noah.penaranda@ciit.edu.ph', '$2y$10$NtEgYbyYDF1q4HEr8IelteMmA9nGdf5rsXLEZcFoT1svsyqn/CLOG');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wishlist`
+--
+
+CREATE TABLE `wishlist` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `item` varchar(255) NOT NULL,
+  `amount` decimal(12,2) DEFAULT 0.00,
+  `shop` text DEFAULT '—'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `wishlist`
+--
+
+INSERT INTO `wishlist` (`id`, `user_id`, `item`, `amount`, `shop`) VALUES
+(1, 1, 'Smiksi Touch Light', 1999.00, 'Fully Booked'),
+(2, 1, 'Bingo Plushie', 1699.00, 'Toy Kingdom');
+
 --
 -- Indexes for dumped tables
 --
@@ -193,9 +254,9 @@ ALTER TABLE `assets`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `budget_log`
+-- Indexes for table `budget`
 --
-ALTER TABLE `budget_log`
+ALTER TABLE `budget`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `expensetype_id` (`expensetype_id`),
@@ -210,6 +271,12 @@ ALTER TABLE `dailyexpense_log`
   ADD KEY `user_id` (`user_id`),
   ADD KEY `expensetype_id` (`expensetype_id`),
   ADD KEY `source_id` (`source_id`);
+
+--
+-- Indexes for table `delete_log`
+--
+ALTER TABLE `delete_log`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `expenses`
@@ -229,6 +296,14 @@ ALTER TABLE `frequency`
 ALTER TABLE `income_log`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
+  ADD KEY `source_id` (`source_id`);
+
+--
+-- Indexes for table `source_fund`
+--
+ALTER TABLE `source_fund`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
   ADD KEY `asset_id` (`asset_id`);
 
 --
@@ -236,6 +311,13 @@ ALTER TABLE `income_log`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -248,16 +330,22 @@ ALTER TABLE `assets`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `budget_log`
+-- AUTO_INCREMENT for table `budget`
 --
-ALTER TABLE `budget_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `budget`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `dailyexpense_log`
 --
 ALTER TABLE `dailyexpense_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `delete_log`
+--
+ALTER TABLE `delete_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `expenses`
@@ -275,7 +363,13 @@ ALTER TABLE `frequency`
 -- AUTO_INCREMENT for table `income_log`
 --
 ALTER TABLE `income_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `source_fund`
+--
+ALTER TABLE `source_fund`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -284,18 +378,24 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `budget_log`
+-- Constraints for table `budget`
 --
-ALTER TABLE `budget_log`
-  ADD CONSTRAINT `budget_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `budget_log_ibfk_2` FOREIGN KEY (`expensetype_id`) REFERENCES `expenses` (`id`),
-  ADD CONSTRAINT `budget_log_ibfk_3` FOREIGN KEY (`source_id`) REFERENCES `assets` (`id`),
-  ADD CONSTRAINT `budget_log_ibfk_4` FOREIGN KEY (`frequency_id`) REFERENCES `frequency` (`id`),
-  ADD CONSTRAINT `budget_log_ibfk_5` FOREIGN KEY (`source_id`) REFERENCES `income_log` (`id`);
+ALTER TABLE `budget`
+  ADD CONSTRAINT `budget_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `budget_ibfk_2` FOREIGN KEY (`expensetype_id`) REFERENCES `expenses` (`id`),
+  ADD CONSTRAINT `budget_ibfk_3` FOREIGN KEY (`source_id`) REFERENCES `assets` (`id`),
+  ADD CONSTRAINT `budget_ibfk_4` FOREIGN KEY (`frequency_id`) REFERENCES `frequency` (`id`),
+  ADD CONSTRAINT `budget_ibfk_5` FOREIGN KEY (`source_id`) REFERENCES `source_fund` (`id`);
 
 --
 -- Constraints for table `dailyexpense_log`
@@ -305,14 +405,29 @@ ALTER TABLE `dailyexpense_log`
   ADD CONSTRAINT `dailyexpense_log_ibfk_2` FOREIGN KEY (`source_id`) REFERENCES `assets` (`id`),
   ADD CONSTRAINT `dailyexpense_log_ibfk_3` FOREIGN KEY (`expensetype_id`) REFERENCES `expenses` (`id`),
   ADD CONSTRAINT `dailyexpense_log_ibfk_4` FOREIGN KEY (`source_id`) REFERENCES `assets` (`id`),
-  ADD CONSTRAINT `dailyexpense_log_ibfk_5` FOREIGN KEY (`source_id`) REFERENCES `income_log` (`id`);
+  ADD CONSTRAINT `dailyexpense_log_ibfk_5` FOREIGN KEY (`source_id`) REFERENCES `source_fund` (`id`),
+  ADD CONSTRAINT `dailyexpense_log_ibfk_6` FOREIGN KEY (`source_id`) REFERENCES `source_fund` (`id`),
+  ADD CONSTRAINT `dailyexpense_log_ibfk_7` FOREIGN KEY (`source_id`) REFERENCES `source_fund` (`id`);
 
 --
 -- Constraints for table `income_log`
 --
 ALTER TABLE `income_log`
   ADD CONSTRAINT `income_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `income_log_ibfk_2` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`);
+  ADD CONSTRAINT `income_log_ibfk_2` FOREIGN KEY (`source_id`) REFERENCES `source_fund` (`id`);
+
+--
+-- Constraints for table `source_fund`
+--
+ALTER TABLE `source_fund`
+  ADD CONSTRAINT `source_fund_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `source_fund_ibfk_2` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`);
+
+--
+-- Constraints for table `wishlist`
+--
+ALTER TABLE `wishlist`
+  ADD CONSTRAINT `wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
