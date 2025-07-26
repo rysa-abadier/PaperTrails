@@ -45,7 +45,7 @@
                     echo '<td><button name="cancel">Cancel</button></td></tr>';
                 echo '</form>';
             } else {
-                echo '<tr><td>' . $row["Income_Date"] . '</td>';
+                echo '<tr point><td>' . $row["Income_Date"] . '</td>';
                 echo '<td>P ' . $row["Amount"] . '</td>';
                 echo '<td>' . $row["Income"] . '</td>';
                 echo '<td>' . $assetSource . '</td>';

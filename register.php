@@ -47,18 +47,27 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Register</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="styles.css" />
     </head>
     
-    <body>
-        <form action="register.php" method="POST">
-            First Name: <input type="text" name="fname" /><br>
-            Last Name: <input type="text" name="lname" /><br>
-            Email: <input type="text" name="email" /><br>
-            Password: <input type="password" name="password" /><br>
+    <body class="d-flex align-items-center">
+        <div class="card mx-auto p-2" style="width: 20%; background: white; border-radius: 0.75rem;">
+            <form action="register.php" method="POST" class="card-body p-2 mx-auto" style="width: 75%; background: white;">
+                First Name: <input type="text" name="fname" /><br>
+                Last Name: <input type="text" name="lname" /><br>
+                Email: <input type="text" name="email" /><br>
+                Password: <input type="password" name="password" /><br>
 
-            <button type="submit" name="register">Register</button>
-            <button name="login">Login</button>
-        </form>
+                <div class="d-grid gap-2 justify-content-md-end">
+                    <button type="submit" name="register" class="btn btn-outline-primary mt-3">Register</button>
+                </div>
+
+                <div class="d-grid gap-2 justify-content-md-end mt-1">
+                    <button id="login" name="login" class="btn btn-outline-secondary" style="border: none; font-style: italic;">Already have an account?</button>
+                </div>
+            </form>
+        </div>
     </body>
 </html>

@@ -1,32 +1,144 @@
-body{
-    margin: 30px;
-    font-family: Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abel&display=swap');
+
+html {
+    width: 100%;
+    height: 100%;
 }
 
-form, table {
-    font-family: 'Courier New', Courier, monospace;
+body{
+    margin: 0;
+    padding: 0;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    background: #F6F6EE;
+    font-size: medium;
+}
+
+body, form {
+    font-family: "Abel", sans-serif;
 }
 
 table {
+    font-family: "Intel One Mono", monospace;
     border-collapse: collapse;
 }
 
-button{
-    margin: 5px 5px 5px 0;
-    padding: 8px 12px;
+.dashboard, .dashboard-form {
+    background: white;
+    table-layout: fixed;
+    width: 100%;
+    font-size: 0.8em;
+}
+
+.dashboard-form {
+    background: transparent;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.dashboard-form {
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.dashboard, .dashboard th, .dashboard tr, .dashboard td {
+    border: 1px solid #748459;
+}
+
+.dashboard td {
+    padding: 0.1rem 0.375rem;
+}
+
+.dashboard th {
+    background: #AAC1B1;
+    text-align: center;
+    padding: 0.375rem;
+}
+
+#register:hover, #login:hover {
+    text-decoration: underline;
+    background: transparent;
+    color: #6C757D;
+}
+
+.btn {
+    --bs-btn-padding-x: 0.65rem;
+    --bs-btn-padding-y: 0.3rem;
+}
+
+.btn-outline-primary, .btn-outline-primary:hover {
+    border-color: #748459;
+    color: #748459;
+}
+
+.btn-outline-primary:hover {
+    color: #F6F6EE;
+    background-color: #748459;
 }
 
 input, select {
     margin: 5px 0;
     padding: 3px 5px;
     height: 25px;
+    width: -webkit-fill-available;
     box-sizing: border-box;
 }
 
-::placeholder, select.placeholder option[disabled] {
-    font: italic 14px Arial, sans-serif;
+::placeholder {
+    font: italic 14px 'Courier New', Courier, monospace;
 }
 
-table tr[data-id]:hover {
-    background-color: gainsboro;
+table tr[point]:hover {
+    background-color: #F9EAD7;
+    cursor: pointer;
+}
+
+nav {
+    background: #ABB290;
+}
+
+a.nav-link:hover {
+    color: #F9EAD7;
+}
+
+a.disable-hover:hover {
+    color: inherit;
+}
+
+.nav-link.active {
+    color: #F6F6EE !important;
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.navbar-toggler:focus, .navbar-toggler:active {
+    text-decoration: none !important;
+}
+
+.dropdown-item:hover {
+    background-color: #AAC1B1;
+}
+
+.icon-link {
+    color: black;
+    height: 2em;
+    width: 2em;
+    text-decoration: none;
+}
+
+.icon-link:hover {
+    color: #748459;
+}
+
+.display-icon {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.icon-link:hover .display-icon {
+    color: #748459;
+    opacity: 1;
 }

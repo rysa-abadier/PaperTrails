@@ -53,20 +53,29 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="styles.css" />
     </head>
     
-    <body>
-        <form action="index.php" method="POST">
-            <label>Email:</label><br>
-            <input type="text" name="email" id="email" required /><br>
+    <body class="d-flex align-items-center">
+        <div class="card mx-auto p-2" style="width: 20%; background: white; border-radius: 0.75rem;">
+            <form action="index.php" method="POST" class="card-body p-2 mx-auto" style="width: 75%; background: white;">
+                <label>Email:</label><br>
+                <input type="text" name="email" id="email" required /><br>
 
-            <label>Password:</label><br>
-            <input type="password" name="password" id="password" required /><br>
+                <label>Password:</label><br>
+                <input type="password" name="password" id="password" required /><br>
 
-            <button type="submit" name="login">Login</button>
-            <button name="register">Register</button>
-        </form>
+                <div class="d-grid gap-2 justify-content-md-end">
+                    <button type="submit" name="login" class="btn btn-outline-primary mt-3">Login</button>
+                </div>
 
+                <div class="d-grid gap-2 justify-content-md-end mt-1">
+                    <button id="register" name="register" class="btn btn-outline-secondary" style="border: none; font-style: italic;">Don't have an account?</button>
+                </div>
+            </form>
+        </div>
+        
     </body>
 </html>

@@ -33,7 +33,7 @@
                     echo '<td><button name="cancel">Cancel</button></td></tr>';
                 echo '</form>';
             } else {
-                echo '<tr><td>' . $row["Item"] . '</td>';
+                echo '<tr point><td>' . $row["Item"] . '</td>';
                 echo '<td>P ' . $row["Amount"] . '</td>';
                 echo '<td>' . $row["Shop"] . '</td>';
                 echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=wishlist"><button name="wishlist">Edit</button></a></td>';

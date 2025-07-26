@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jul 25, 2025 at 11:42 AM
+-- Generation Time: Jul 26, 2025 at 04:55 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -67,7 +67,7 @@ CREATE TABLE `budget` (
 
 INSERT INTO `budget` (`id`, `user_id`, `amount`, `total_budget`, `budget_expense`, `expensetype_id`, `source_id`, `frequency_id`, `update_date`) VALUES
 (1, 1, 10.00, 179.00, 'Data', 7, 1, 3, '2025-07-23'),
-(2, 1, 100.00, 200.00, 'pookie', 8, 2, 2, '2025-07-24');
+(2, 1, 100.00, 200.00, 'Savings', 8, 2, 2, '2025-07-24');
 
 -- --------------------------------------------------------
 
@@ -91,7 +91,7 @@ CREATE TABLE `dailyexpense_log` (
 
 INSERT INTO `dailyexpense_log` (`id`, `user_id`, `amount`, `expense`, `source_id`, `expensetype_id`, `expense_date`) VALUES
 (1, 1, 10.00, 'Data', 1, 7, '2025-07-23'),
-(2, 1, 100.00, 'pookie', 2, 8, '2025-07-23');
+(2, 1, 100.00, 'Savings', 2, 8, '2025-07-24');
 
 -- --------------------------------------------------------
 
