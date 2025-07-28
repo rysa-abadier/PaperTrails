@@ -3,24 +3,50 @@
     include_once("session.php");
     include_once("foreignkeys.php");
     
-    function partialFundsList($conn, $id) {
-        $sql = "SELECT `ID`, `Name`, `Amount`, `Asset_ID` FROM Source_Fund WHERE `User_ID` = $id";
-        $result = mysqli_query($conn, $sql);
+    if (isset($_SESSION["insert"])) {
+        echo '<script>alert("New log recorded!");</script>';
+        unset($_SESSION['insert']);
+    } else if (isset($_SESSION["no_selection"])) {
+        echo '<script>alert("You have not selected an option! Please try again.");</script>';
+        unset($_SESSION['no_selection']);
+    } else if (isset($_SESSION["update"])) {
+        echo '<script>alert("Log record update successful!");</script>';
+        unset($_SESSION['update']);
+    } else if (isset($_SESSION["delete"])) {
+        echo '<script>alert("Record delete successful!");</script>';
+        unset($_SESSION['delete']);
+    }
 
-        echo '<a class="icon-link icon-link-hover" href="#">
-            <h2>Funds</h2>
-            <i class="bi bi-arrow-right display-icon" style="margin-bottom: 0.75rem;"></i>
-        </a>';
-        echo '<table class="dashboard">';
-        echo '<tr><th style="width: 55%;">Source Fund</th>';
-        echo '<th>Amount</th></tr>';
+    function shortListFunds($conn) {
+        fundsHeaders(false);
+
+        $sql = "SELECT `ID`, `Name`, `Amount` FROM Source_Fund WHERE `User_ID` = " . $_SESSION["id"];
+        $result = mysqli_query($conn, $sql);
+        
+        if (mysqli_num_rows($result) > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                echo '<tr point><td>' . $row["Name"] . '</td>';
+                echo '<td>P ' . $row["Amount"] . '</td></tr>';
+            }
+        } else {
+            echo '<tr><td colspan="2">0 results</td></tr>';
+        }
+        echo '</table>';
+    }
+
+    function listFunds($conn) {
+        fundsHeaders(true);
+
+        $sql = "SELECT `ID`, `Name`, `Amount`, `Asset_ID` FROM Source_Fund WHERE `User_ID` = " . $_SESSION["id"];
+        $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_assoc($result)) {
                 $assetType = getAssetType($conn, $row["Asset_ID"]);
 
                 echo '<tr point><td>' . $row["Name"] . '</td>';
-                echo '<td>P ' . $row["Amount"] . '</td></tr>';
+                echo '<td>P ' . $row["Amount"] . '</td>';
+                echo '<td>' . $assetType . '</td></tr>';
             }
         } else {
             echo '<tr><td colspan="3">0 results</td></tr>';
@@ -28,23 +54,37 @@
         echo '</table>';
     }
 
-    function fullFundsList($conn, $id, $page, $editID) {
-        $sql = "SELECT `ID`, `Name`, `Amount`, `Asset_ID` FROM Source_Fund WHERE `User_ID` = $id";
-        $result = mysqli_query($conn, $sql);
+    function addFunds($conn) {
+        echo '<form action="insert.php" method="POST">';
+            echo '<tr><td style="width: 35%; padding-left: 4.90%;"><input type="text" name="name" placeholder="Source Fund" required /></td>';
+            echo '<td style="width: 30%;">P <input style="width: 95.85%;" type="text" name="amount" placeholder="Amount" required /></td>';
 
-        echo '<h2>Funds</h2>';
-        echo '<table>';
-        echo '<tr><th>Source Fund</th>';
-        echo '<th>Amount</th>';
-        echo '<th>Kind of Asset</th></tr>';
+            echo '<td style="width: 30%;"><select name="type" required>';
+            $ctr = 1;
+            foreach (assets($conn) as $asset) {
+                echo '<option value="'. $ctr++ . '">' . $asset . '</option>';
+            }
+            echo '<option class="placeholder" value="0" selected disabled hidden>Kind of Asset</option>';
+            echo '</select></td>';
+
+            echo '<td><button class="btn btn-outline-primary" type="submit" name="sourceFunds">Add</button></td></tr>';
+        echo '</form>';
+    }
+
+    function editFunds($conn, $page, $editID) {
+        fundsHeaders(true);
+
+        $sql = "SELECT `ID`, `Name`, `Amount`, `Asset_ID` FROM Source_Fund WHERE `User_ID` = " . $_SESSION["id"];
+        $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_assoc($result)) {
                 $assetType = getAssetType($conn, $row["Asset_ID"]);
 
                 if ($page == "sourceFunds" && $row["ID"] == $editID) {
-                    echo '<form action="update.php" method="POST">';
+                    echo '<form method="POST" class="edit-row delete-row">';
                         echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
+
                         echo '<tr><td><input type="text" name="name" value="' . $row["Name"] . '" /></td>';
                         echo '<td>P ' . $row["Amount"] . '</td>';
 
@@ -54,38 +94,32 @@
                             if ($assetType == $asset) echo '<option value="'. $ctr++ . '" selected>' . $asset . '</option>';
                             else echo '<option value="'. $ctr++ . '">' . $asset . '</option>';
                         }
-                        echo '</select></td>';
-
-                        echo '<td><button type="submit" name="sourceFunds">Update</button></td>';
-                        echo '<td><button name="cancel">Cancel</button></td></tr>';
+                        echo '</select></td></tr>';
                     echo '</form>';
                 } else {
-                    echo '<tr point><td>' . $row["Name"] . '</td>';
+                    echo '<tr data-id="' . $row["ID"] . '"><td>' . $row["Name"] . '</td>';
                     echo '<td>P ' . $row["Amount"] . '</td>';
-                    echo '<td>' . $assetType . '</td>';
-                    echo '<td><a style="text-decoration: none; color: inherit;" href="edit.php?id=' . $row["ID"] . '&page=sourceFunds"><button name="sourceFunds">Edit</button></a></td>';
-                    echo '<td><a style="text-decoration: none; color: inherit;" href="delete.php?id=' . $row["ID"] . '&page=sourceFunds"><button name="sourceFunds">Delete</button></a></td></tr>';
+                    echo '<td>' . $assetType . '</td></tr>';
                 }
             }
         } else {
             echo '<tr><td colspan="3">0 results</td></tr>';
         }
+        echo "</table>";
     }
 
-    function addFunds($conn) {
-        echo '<form action="insert.php" method="POST">';
-            echo '<tr><td><input type="text" name="name" placeholder="Source Fund" required /></td>';
-            echo '<td>P <input type="text" name="amount" placeholder="Amount" required /></td>';
+    function fundsHeaders($show) {
+        echo '<table class="dashboard mx-auto"';
+        if ($show) {
+            echo ' style="font-size: 0.9rem; width: 90%;"';
+        }
+        echo '>';
 
-            echo '<td><select name="type" required>';
-            $ctr = 1;
-            foreach (assets($conn) as $asset) {
-                echo '<option value="'. $ctr++ . '">' . $asset . '</option>';
-            }
-            echo '<option class="placeholder" value="0" selected disabled hidden>Kind of Asset</option>';
-            echo '</select></td>';
+        echo '<tr><th>Source Fund</th>';
+        echo '<th>Amount</th>';
 
-            echo '<td><button type="submit" name="sourceFunds">Add</button></td></tr>';
-        echo '</form>';
+        if ($show) {
+            echo '<th>Kind of Asset</th></tr>';
+        }
     }
 ?>

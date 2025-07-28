@@ -27,3 +27,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const editForm = document.querySelector(".edit-row");
+    const deleteForm = document.querySelector(".delete-row");
+
+    if (editForm) {
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitForm(globalThis.currentPage, editForm, "update.php");
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                submitForm("cancel", editForm, "update.php");
+            } else if (event.key === 'Delete') {
+                event.preventDefault();
+                submitForm(globalThis.currentPage, deleteForm, "delete.php");
+            }
+        });
+    }
+
+    function submitForm(pageName, form, url) {
+        setActionForm(form, url);
+
+        const hiddenButton = document.createElement("button");
+        hiddenButton.type = "submit";
+        hiddenButton.name = pageName;
+        hiddenButton.style.display = "none";
+        form.appendChild(hiddenButton);
+        hiddenButton.click();
+    }
+
+    function setActionForm(form, url) {
+        return form.setAttribute("action", url);
+    }
+});

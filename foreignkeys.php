@@ -35,6 +35,15 @@
         else return deleteLogs($conn, $id);
     }
 
+    function getBudget($conn, $id) {
+        $sql = "SELECT `Budget_Expense` FROM Bugdet WHERE `ID` = $id";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+
+        if ($row > 0) return $row["Budget_Expense"];
+        else return deleteLogs($conn, $id);
+    }
+
     function expenseTypes($conn) {
         $expenses = [];
 
@@ -93,6 +102,21 @@
         }
 
         return $assets;
+    }
+
+    function budgets($conn, $id) {
+        $budgets = [];
+
+        $sql = "SELECT `ID`, `Budget_Expense` FROM Budget WHERE `User_ID` = $id";
+        $result = mysqli_query($conn, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                $budgets += [$row["ID"] => $row["Budget_Expense"]];
+            }
+        }
+
+        return $budgets;
     }
 
     function deleteLogs($conn, $id) {

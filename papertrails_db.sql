@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jul 26, 2025 at 04:55 AM
+-- Generation Time: Jul 28, 2025 at 06:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -61,14 +61,6 @@ CREATE TABLE `budget` (
   `update_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `budget`
---
-
-INSERT INTO `budget` (`id`, `user_id`, `amount`, `total_budget`, `budget_expense`, `expensetype_id`, `source_id`, `frequency_id`, `update_date`) VALUES
-(1, 1, 10.00, 179.00, 'Data', 7, 1, 3, '2025-07-23'),
-(2, 1, 100.00, 200.00, 'Savings', 8, 2, 2, '2025-07-24');
-
 -- --------------------------------------------------------
 
 --
@@ -84,14 +76,6 @@ CREATE TABLE `dailyexpense_log` (
   `expensetype_id` int(11) NOT NULL,
   `expense_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `dailyexpense_log`
---
-
-INSERT INTO `dailyexpense_log` (`id`, `user_id`, `amount`, `expense`, `source_id`, `expensetype_id`, `expense_date`) VALUES
-(1, 1, 10.00, 'Data', 1, 7, '2025-07-23'),
-(2, 1, 100.00, 'Savings', 2, 8, '2025-07-24');
 
 -- --------------------------------------------------------
 
@@ -169,14 +153,6 @@ CREATE TABLE `income_log` (
   `income_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `income_log`
---
-
-INSERT INTO `income_log` (`id`, `user_id`, `amount`, `income`, `source_id`, `income_date`) VALUES
-(1, 1, 300.00, '—', 1, '2025-07-23'),
-(2, 1, 2500.00, '—', 2, '2025-07-23');
-
 -- --------------------------------------------------------
 
 --
@@ -190,14 +166,6 @@ CREATE TABLE `source_fund` (
   `amount` decimal(12,2) NOT NULL DEFAULT 0.00,
   `asset_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `source_fund`
---
-
-INSERT INTO `source_fund` (`id`, `user_id`, `name`, `amount`, `asset_id`) VALUES
-(1, 1, 'GCash', 290.00, 2),
-(2, 1, 'Allowance', 2400.00, 1);
 
 -- --------------------------------------------------------
 
@@ -234,14 +202,6 @@ CREATE TABLE `wishlist` (
   `amount` decimal(12,2) DEFAULT 0.00,
   `shop` text DEFAULT '—'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `wishlist`
---
-
-INSERT INTO `wishlist` (`id`, `user_id`, `item`, `amount`, `shop`) VALUES
-(1, 1, 'Smiksi Touch Light', 1999.00, 'Fully Booked'),
-(2, 1, 'Bingo Plushie', 1699.00, 'Toy Kingdom');
 
 --
 -- Indexes for dumped tables
@@ -339,7 +299,7 @@ ALTER TABLE `budget`
 -- AUTO_INCREMENT for table `dailyexpense_log`
 --
 ALTER TABLE `dailyexpense_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `delete_log`

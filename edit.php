@@ -6,23 +6,23 @@
 
     if ($page == "dailyExpenses") {
         edit($page, $id);
-        header("Location: dashboard.php");
+        header("Location: $directPage.php");
         exit();
     } else if ($page == "budget") {
         edit($page, $id);
-        header("Location: dashboard.php");
+        header("Location: $directPage.php");
         exit();
     } else if ($page == "sourceFunds") {
         edit($page, $id);
-        header("Location: dashboard.php");
+        header("Location: $directPage.php");
         exit();
     } else if ($page == "wishlist") {
         edit($page, $id);
-        header("Location: dashboard.php");
+        header("Location: $directPage.php");
         exit();
     } else if ($page == "income") {
         edit($page, $id);
-        header("Location: dashboard.php");
+        header("Location: $directPage.php");
         exit();
     }
 

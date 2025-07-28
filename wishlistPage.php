@@ -1,14 +1,17 @@
 <?php
     include_once('connect.php');
     include_once('session.php');
-    include_once("budget.php");
+    include_once("wishlist.php");
     include_once("sourcefunds.php");
-    include_once("dailyexpenses.php");
+    include_once("budget.php");
 
-    if (isset($_SESSION["login"])) {
-        echo '<script>alert("Login successful!");</script>';
-        unset($_SESSION['login']);
+    // var_dump($_SESSION);
+
+    if (isset($_SESSION["page"])) {
+        unset($_SESSION["page"]);
     }
+    echo '<script>globalThis.currentPage = "wishlist";</script>';
+    $_SESSION["page"] = "wishlistPage";
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +19,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
+        <title>Wishlist Tracker</title>
         
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
@@ -38,12 +41,12 @@
 
                 <div class="collapse navbar-collapse" id="navbarScroll">
                     <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
-                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trackers</a>
+                        <li class="nav-item"><a class="nav-link" aria-current="page" href="dashboard.php">Home</a></li>
+                        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trackers</a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="dailyPage.php">Daily Expenses</a></li>
                                 <li><a class="dropdown-item" href="budgetPage.php">Budget</a></li>
-                                <li><a class="dropdown-item" href="wishlistPage.php">Wishlist</a></li>
+                                <li><a class="dropdown-item" href="#">Wishlist</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="incomePage.php">Income</a></li>
                                 <li><a class="dropdown-item" href="fundsPage.php">Source Funds</a></li>
@@ -65,18 +68,18 @@
             </div>
         </nav>
 
-        <div class="card d-flex flex-row mt-5 px-2 align-items-center mx-auto" style="width: 80%; border-radius: 1rem;">
-            <div class="d-flex flex-row ms-3" style="width: 55%;">
+        <div class="card d-flex flex-row mt-5 py-2 align-items-center mx-auto" style="width: 80%; border-radius: 1rem;">
+            <div class="d-flex flex-row ms-3 justify-content-center align-items-center">
                 <?php
-                    echo '<div class="d-inline p-2" style="width: 30%">';        
+                    echo '<div class="d-inline p-2" style="width: 30%">';
                         echo '<a class="icon-link icon-link-hover" href="fundsPage.php">
                             <h3>Funds</h3>
                             <i class="bi bi-arrow-right display-icon" style="margin-bottom: 0.75rem;"></i>
                         </a>';
                         shortListFunds($conn);
                     echo '</div>';
-                
-                    echo '<div class="d-inline p-2" style="width: 70%">';
+
+                    echo '<div class="d-inline p-2 me-5" style="width: 40%">'; 
                         echo '<a class="icon-link icon-link-hover" href="budgetPage.php">
                             <h3>Budget</h3>
                             <i class="bi bi-arrow-right display-icon" style="margin-bottom: 0.75rem;"></i>
@@ -84,58 +87,39 @@
                         shortListBudget($conn);
                     echo '</div>';
                 ?>
-            </div>
 
-            <div class="vr my-5 mx-3"></div>
+                <!-- <div class="vr mx-3 my-4"></div>
 
-            <div class="d-flex flex-row-reverse py-4" style="width: 40%;">
-                <div class="d-inline" id="chart1" style="width: 20em; height: 18em;"></div>
-                <div class="d-inline" id="chart2" style="width: 20em; height: 18em;"></div>
-                    <script>
-                        google.charts.load("current", { packages: ["corechart"] });
-                        google.charts.setOnLoadCallback(drawCharts);
+                <div class="d-flex flex-row-reverse py-2 me-3">
+                    <div class="d-inline" id="chart" style="width: 20em; height: 15em;"></div>
+                        <script>
+                            google.charts.load("current", { packages: ["corechart"] });
+                            google.charts.setOnLoadCallback(drawChart);
 
-                        function drawCharts() {
-                            const data1 = google.visualization.arrayToDataTable([
-                                ['Task', 'Hours per Day'],
-                                ['Work', 8],
-                                ['Eat', 2],
-                                ['TV', 4],
-                                ['Gym', 2],
-                                ['Sleep', 8]
-                            ]);
+                            function drawChart() {
+                                const data = google.visualization.arrayToDataTable([
+                                    ['Task', 'Hours per Day'],
+                                    ['Work', 8],
+                                    ['Eat', 2],
+                                    ['TV', 4],
+                                    ['Gym', 2],
+                                    ['Sleep', 8]
+                                ]);
 
-                            const data2 = google.visualization.arrayToDataTable([
-                                ['Category', 'Amount'],
-                                ['Food', 300],
-                                ['Rent', 700],
-                                ['Utilities', 200],
-                                ['Transport', 150]
-                            ]);
+                                const options = {
+                                    pieHole: 0.4,
+                                    colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
+                                    chartArea: {width: '100%', height: '90%', left: 0},
+                                    legend: 'none',
+                                    backgroundColor: 'transparent'
+                                };
 
-                            const options1 = {
-                                pieHole: 0.4,
-                                colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
-                                chartArea: {width: '100%', height: '90%', left: 0},
-                                legend: 'none',
-                                backgroundColor: 'transparent'
-                            };
+                                const chart = new google.visualization.PieChart(document.getElementById('chart'));
 
-                            const options2 = {
-                                pieHole: 0.4,
-                                colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
-                                chartArea: {width: '100%', height: '90%', left: 0},
-                                legend: 'none',
-                                backgroundColor: 'transparent'
-                            };
-
-                            const chart1 = new google.visualization.PieChart(document.getElementById('chart1'));
-                            const chart2 = new google.visualization.PieChart(document.getElementById('chart2'));
-
-                            chart1.draw(data1, options1);
-                            chart2.draw(data2, options2);
-                        }
-                    </script> 
+                                chart.draw(data, options);
+                            }
+                        </script> 
+                </div> -->
             </div>
         </div>
 
@@ -143,16 +127,13 @@
             <div class="d-flex flex-row justify-content-center">
                 <?php
                     echo '<div class="p-2" style="width: 80%;">';
-                        echo '<a class="icon-link icon-link-hover" href="dailyPage.php" style="width: fit-content;">
-                            <h2>Daily Expenses Log</h2>
-                            <i class="bi bi-arrow-right display-icon" style="margin-bottom: 0.75rem;"></i>
-                        </a>';
+                        echo '<h2>Wishlist Log</h2>';
 
                         echo '<table class="dashboard-form mb-2">';
-                            addDaily($conn);
+                            addWishlist();
                         echo '</table>';
 
-                        listDaily($conn);
+                        editWishlist($conn,$page, $editID);
                     echo '</div>';
                 ?>
             </div>

@@ -37,12 +37,9 @@ table {
     font-size: 0.9rem;
 }
 
-.dashboard-form {
-    border: none;
-    background: transparent;
-    text-align: center;
-    font-size: 0.9rem;
-}
+/* .dashboard-form td {
+    border: 1px solid #748459;
+} */
 
 .dashboard, .dashboard th, .dashboard tr, .dashboard td {
     border: 1px solid #748459;
@@ -91,7 +88,7 @@ input, select {
     font: italic 14px 'Courier New', Courier, monospace;
 }
 
-table tr[point]:hover {
+table tr[data-id]:hover, table tr[point]:hover {
     background-color: #F9EAD7;
     cursor: pointer;
 }
