@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Jul 28, 2025 at 06:30 AM
+-- Host: 127.0.0.1
+-- Generation Time: Jul 31, 2025 at 06:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,6 +55,7 @@ CREATE TABLE `budget` (
   `amount` decimal(12,2) NOT NULL,
   `total_budget` decimal(12,2) NOT NULL,
   `budget_expense` varchar(255) NOT NULL,
+  `saving` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `expensetype_id` int(11) NOT NULL,
   `source_id` int(11) NOT NULL,
   `frequency_id` int(11) NOT NULL,
@@ -72,6 +73,7 @@ CREATE TABLE `dailyexpense_log` (
   `user_id` int(11) NOT NULL,
   `amount` decimal(12,2) NOT NULL,
   `expense` varchar(255) DEFAULT '—',
+  `budget` enum('Yes','No') NOT NULL DEFAULT 'No',
   `source_id` int(11) NOT NULL,
   `expensetype_id` int(11) NOT NULL,
   `expense_date` date NOT NULL DEFAULT current_timestamp()
@@ -113,7 +115,8 @@ INSERT INTO `expenses` (`id`, `name`) VALUES
 (5, 'Debt Payments'),
 (6, 'Healthcare'),
 (7, 'Technology'),
-(8, 'Savings and Investments');
+(8, 'Savings and Investments'),
+(9, 'Others');
 
 -- --------------------------------------------------------
 
@@ -218,6 +221,7 @@ ALTER TABLE `assets`
 --
 ALTER TABLE `budget`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `budget_expense` (`budget_expense`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `expensetype_id` (`expensetype_id`),
   ADD KEY `frequency_id` (`frequency_id`),
@@ -293,13 +297,13 @@ ALTER TABLE `assets`
 -- AUTO_INCREMENT for table `budget`
 --
 ALTER TABLE `budget`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `dailyexpense_log`
 --
 ALTER TABLE `dailyexpense_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `delete_log`
@@ -311,7 +315,7 @@ ALTER TABLE `delete_log`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `frequency`
@@ -323,13 +327,13 @@ ALTER TABLE `frequency`
 -- AUTO_INCREMENT for table `income_log`
 --
 ALTER TABLE `income_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `source_fund`
 --
 ALTER TABLE `source_fund`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -341,7 +345,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `wishlist`
 --
 ALTER TABLE `wishlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

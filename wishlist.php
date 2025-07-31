@@ -55,7 +55,7 @@
     function addWishlist() {
         echo '<form action="insert.php" method="POST">';
             echo '<tr><td style="width: 35%; padding-left: 4.95%;"><input type="text" name="name" placeholder="Item" required /></td>';
-            echo '<td style="width: 30%;">P <input type="text" name="amount" placeholder="Amount" style="width: 95.85%" required /></td>';
+            echo '<td style="width: 30%;">P <input type="text" name="amount" placeholder="Amount" style="width: 95.50%" required /></td>';
             echo '<td style="width: 30%;"><input type="text" name="shop" placeholder="Shop" /></td>';
             echo '<td><button class="btn btn-outline-primary" type="submit" name="wishlist">Add</button></td></tr>';
         echo '</form>';
@@ -74,7 +74,7 @@
                         echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
 
                         echo '<td><input type="text" name="name" value="' . $row["Item"] . '" /></td>';
-                        echo '<td>P <input style="width: 95.75%;" type="text" name="amount" value="' . $row["Amount"] . '" /></td>';
+                        echo '<td>P <input style="width: 95.45%;" type="text" name="amount" value="' . $row["Amount"] . '" /></td>';
                         echo '<td><input type="text" name="shop" value="' . $row["Shop"] . '" /></td></tr>';
                     echo '</form>';
                 } else {

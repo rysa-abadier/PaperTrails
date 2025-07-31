@@ -36,11 +36,16 @@
     }
 
     function getBudget($conn, $id) {
-        $sql = "SELECT `Budget_Expense` FROM Bugdet WHERE `ID` = $id";
+        $sql = "SELECT `Budget_Expense`, `Source_ID`, `Saving`, `ExpenseType_ID` FROM Budget WHERE `ID` = $id";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        if ($row > 0) return $row["Budget_Expense"];
+        if ($row > 0) {
+            $save = $row["Saving"] == "Yes" ? true : false;
+
+            $budget = [$row["Budget_Expense"] => $row["Source_ID"], $row["ExpenseType_ID"] => $save];
+            return $budget;
+        } 
         else return deleteLogs($conn, $id);
     }
 
@@ -124,6 +129,6 @@
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        return $row["Deleted_Name"];
+        return '[DELETED] ' . $row["Deleted_Name"];
     }
 ?>

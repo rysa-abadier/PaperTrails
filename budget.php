@@ -34,7 +34,7 @@
 
                 switch ($payDate) {
                     case 1:
-                        date_add($date,date_interval_create_from_date_string("1"));
+                        date_add($date,date_interval_create_from_date_string("1 day"));
                         break;
                     case 2:
                         date_add($date,date_interval_create_from_date_string("1 week"));
@@ -93,7 +93,7 @@
         echo '<form action="insert.php" method="POST">';
             echo '<tr><td style="width: 17.90%; padding-left: 5%;"><input type="text" name="budgetExpense" placeholder="Budget" required /></td>';
             echo '<td style="width: 12.775%;">P <input type="text" name="saved" placeholder="Saved" style="width: 89%" /></td>';
-            echo '<td style="width: 12.9%;">P <input type="text" name="total" placeholder="Total Budget" style="width: 89%;" required /></td>';
+            echo '<td style="width: 12.9%;">P <input type="text" name="total" placeholder="Total Budget" style="width: 89%;" /></td>';
 
             echo '<td style="width: 12.85%;"><select name="type" required>';
             $ctr = 1;
@@ -127,7 +127,7 @@
     function editBudget($conn, $page, $editID) {
         budgetHeaders(true);
 
-        $sql = "SELECT `ID`, `Update_Date`, `Budget_Expense`, `Amount`, `Total_Budget`, `ExpenseType_ID`, `Source_ID`, `Frequency_ID` FROM Budget WHERE `User_ID` = " . $_SESSION["id"];
+        $sql = "SELECT `ID`, `Update_Date`, `Budget_Expense`, `Amount`, `Total_Budget`, `Saving`, `ExpenseType_ID`, `Source_ID`, `Frequency_ID` FROM Budget WHERE `User_ID` = " . $_SESSION["id"];
         $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
@@ -143,6 +143,7 @@
                         echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
                         echo '<input type="hidden" name="date" value="' . $row["Update_Date"] . '">';
                         echo '<input type="hidden" name="initial" value="' . $row["Amount"] . '">';
+                        echo '<input type="hidden" name="saving" value="' . $row["Saving"] . '">';
                         
                         echo '<tr><td><input type="text" name="budgetExpense" value="' . $row["Budget_Expense"] . '" /></td>';
                         echo '<td>P <input style="width: 88.9%;" type="text" name="final" value="' . $row["Amount"] . '" /></td>';
@@ -216,7 +217,7 @@
     function calculatePayDate($payDate, $date) {
         switch ($payDate) {
             case 1:
-                date_add($date,date_interval_create_from_date_string("1"));
+                date_add($date,date_interval_create_from_date_string("1 day"));
                 break;
             case 2:
                 date_add($date,date_interval_create_from_date_string("1 week"));

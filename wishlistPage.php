@@ -52,7 +52,7 @@
                                 <li><a class="dropdown-item" href="fundsPage.php">Source Funds</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="calendarPage.php">Calendar</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="calendarPage.php">Calendar</a></li> -->
                     </ul>
 
                     <span class="navbar-text" style="color: #F6F6EE;">HELLO, <strong><?php echo $_SESSION['name']; ?></strong> !</span>
@@ -68,8 +68,8 @@
             </div>
         </nav>
 
-        <div class="card d-flex flex-row mt-5 py-2 align-items-center mx-auto" style="width: 80%; border-radius: 1rem;">
-            <div class="d-flex flex-row ms-3 justify-content-center align-items-center">
+        <div class="card d-flex flex-row mt-5 px-2 py-4 align-items-center mx-auto" style="width: 80%; border-radius: 1rem;">
+            <div class="d-flex flex-row ms-3 justify-content-center">
                 <?php
                     echo '<div class="d-inline p-2" style="width: 30%">';
                         echo '<a class="icon-link icon-link-hover" href="fundsPage.php">

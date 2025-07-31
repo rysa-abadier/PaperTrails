@@ -74,20 +74,22 @@
     function editDaily($conn, $page, $editID) {
         dailyHeaders();
 
-        $sql = "SELECT `ID`, DATE_FORMAT(Expense_Date, '%m-%d-%Y') AS `Expense_Date`, `Amount`, `Expense`, `ExpenseType_ID`, `Source_ID` FROM DailyExpense_Log WHERE `User_ID` =" . $_SESSION["id"];
+        $sql = "SELECT `ID`, `Expense_Date`, `Amount`, `Expense`, `Budget`, `ExpenseType_ID`, `Source_ID` FROM DailyExpense_Log WHERE `User_ID` =" . $_SESSION["id"];
         $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_assoc($result)) {
                 $expenseType = getExpenseType($conn, $row["ExpenseType_ID"]);
                 $assetSource = getAssetSource($conn, $row["Source_ID"]);
+                $date = date_create($row["Expense_Date"]);
 
                 if ($page == "dailyExpenses" && $row["ID"] == $editID) {
-                    echo '<tr><td>' . $row["Expense_Date"] . '</td>';
+                    echo '<tr><td>' . date_format($date,"m-d-Y") . '</td>';
 
                     echo '<form action="update.php" method="POST" class="edit-row">';
                         echo '<input type="hidden" name="edit_ID" value="' . $row["ID"] . '">';
                         echo '<input type="hidden" name="date" value="' . $row["Expense_Date"] . '">';
+                        echo '<input type="hidden" name="budget" value="' . $row["Budget"] . '">';
                         echo '<input type="hidden" name="initial" value="' . $row["Amount"] . '">';
                         
                         echo '<td>P <input type="text" name="final" value="' . $row["Amount"] . '" style="width: 92%;" /></td>';
@@ -109,7 +111,7 @@
                         echo '</select></td></tr>';
                     echo '</form>';
                 } else {
-                    echo '<tr data-id="' . $row["ID"] . '"><td>' . $row["Expense_Date"] . '</td>';
+                    echo '<tr data-id="' . $row["ID"] . '"><td>' . date_format($date,"m-d-Y") . '</td>';
                     echo '<td>P ' . $row["Amount"] . '</td>';
                     echo '<td>' . $row["Expense"] . '</td>';
                     echo '<td>' . $expenseType . '</td>';

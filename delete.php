@@ -2,29 +2,44 @@
     include_once("connect.php");
     include_once("session.php");
 
+    $id = $_POST['edit_ID'];
+
+    mysqli_query($conn, "SET FOREIGN_KEY_CHECKS=0");
+
     if (isset($_REQUEST["budget"])) {
+        $saved = $_POST["final"];
+        $source = $_POST["source"];
+
+        $sql = "UPDATE `Source_Fund` SET `Amount`= `Amount` + $saved WHERE ID = $source";
+
+        if (mysqli_query($conn, $sql)) {
+            $_SESSION["update"] = true;
+        } else {
+            error($conn, $sql, $header);
+        }
+
         $sql = "SELECT `Budget_Expense` FROM Budget WHERE `ID` = $id";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        log($conn, $sql, $id, $row["Budget_Expense"], `Budget`, $directPage);
+        deleteLog($conn, $sql, $id, $row["Budget_Expense"], 'Budget', $directPage);
     } else if (isset($_REQUEST["sourceFunds"])) {
         $sql = "SELECT `Name` FROM `Source_Fund` WHERE `ID` = $id";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
-        log($conn, $sql, $id, $row["Name"], `Source_Fund`, $directPage);
+        deleteLog($conn, $sql, $id, $row["Name"], 'Source_Fund', $directPage);
     } else if (isset($_REQUEST["wishlist"])) {
-        delete($conn, $id, `Wishlist`, $directPage);
+        delete($conn, $id, 'Wishlist', $directPage);
     } else {
         $_SESSION["delete"] = true;
         header("Location: $directPage.php");
         exit();
     }
 
-    function log($conn, $sql, $id, $name, $table, $header) {
+    function deleteLog($conn, $sql, $id, $name, $table, $header) {
         if (mysqli_query($conn, $sql)) {
-            $sql = "INSERT INTO `Delete_Log`(`Deleted_ID`, `Deleted_Name`, `Table`) VALUES ($id,'$name','$table')";
+            $sql = "INSERT INTO `Delete_Log`(`Deleted_ID`, `Deleted_Name`, `Table`) VALUES ($id,'$name', '$table')";
 
             if (mysqli_query($conn, $sql)) {
                 delete($conn, $id, $table, $header);
@@ -41,6 +56,9 @@
         
         if (mysqli_query($conn, $sql)) {
             $_SESSION["delete"] = true;
+
+            mysqli_query($conn, "SET FOREIGN_KEY_CHECKS=1");
+
             header("Location: $header.php");
             exit();
         } else {

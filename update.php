@@ -8,12 +8,36 @@
         $final = $_POST['final'];
         $date = formatDate($_POST['date']);
         $expense = $_POST['expense'];
+        $budget = $_POST['budget'] == "Yes" ? true : false;
         $type = $_POST['type'];
         $source = $_POST['source'];
         $amount = $final - $initial;
 
         $sql = "UPDATE `DailyExpense_Log` SET `User_ID`= $id, `Amount`= $final, `Expense`= '$expense', `Source_ID`= $source, `ExpenseType_ID`= $type,`Expense_Date`= '$date' WHERE ID = $logID";
         update($conn, $sql, $directPage);
+
+        if ($budget) {
+            $sql = "SELECT `ID`, `Saving` FROM Budget WHERE `Budget_Expense` = '$expense' AND `User_ID` = " . $_SESSION["id"];
+            $result = mysqli_query($conn, $sql);
+            $row = mysqli_fetch_assoc($result);
+
+            $saving = $row['Saving'] == "Yes" ? true : false;
+            $budgetID = $row['ID'];
+
+            if ($saving) {
+                $sql = "UPDATE `Budget` SET `Amount`= Amount + $amount WHERE ID = $budgetID";
+                update($conn, $sql, $directPage);
+
+                header("Location: $directPage.php");
+                exit();
+            } else {
+                $sql = "UPDATE `Budget` SET `Amount`= Amount - $amount WHERE ID = $budgetID";
+                update($conn, $sql, $directPage);
+
+                header("Location: $directPage.php");
+                exit();
+            }
+        }
 
         if ($amount != 0) {
             recalculate($conn, $source, $amount, $directPage);
@@ -32,9 +56,41 @@
         $source = $_POST['source'];
         $frequency = $_POST['frequency'];
         $amount = $final - $initial;
+        $saving = $_POST['saving'] == "Yes" ? true : false;
 
-        $sql = "UPDATE `Budget` SET `User_ID`= $id,`Amount`= $final, `Total_Budget`= $total, `Budget_Expense`= '$budget',`ExpenseType_ID`= $type,`Source_ID`= $source,`Frequency_ID`= $frequency,`Update_Date`= '$date' WHERE ID = $logID";
-        update($conn, $sql, $directPage);
+        if ($saving) {
+            $sql = "UPDATE `Budget` SET `User_ID`= $id,`Amount`= $final, `Total_Budget`= $total, `Budget_Expense`= '$budget',`ExpenseType_ID`= $type,`Source_ID`= $source,`Frequency_ID`= $frequency,`Update_Date`= '$date' WHERE ID = $logID";
+            update($conn, $sql, $directPage);
+
+            header("Location: $directPage.php");
+            exit();
+        } else {
+            if ($amount == 0 && $final > $total) {
+                $amount = $total - $final;
+
+                $sql = "UPDATE `Budget` SET `User_ID`= $id,`Amount`= $total, `Total_Budget`= $total, `Budget_Expense`= '$budget',`ExpenseType_ID`= $type,`Source_ID`= $source,`Frequency_ID`= $frequency,`Update_Date`= '$date' WHERE ID = $logID";
+
+                update($conn, $sql, $directPage);
+                recalculate($conn, $source, $amount, $directPage);
+            }else if ($final > $total) {
+                $sql = "UPDATE `Budget` SET `User_ID`= $id,`Amount`= $final, `Total_Budget`= $final, `Budget_Expense`= '$budget',`ExpenseType_ID`= $type,`Source_ID`= $source,`Frequency_ID`= $frequency,`Update_Date`= '$date' WHERE ID = $logID";
+                update($conn, $sql, $directPage);
+                recalculate($conn, $source, $amount, $directPage);
+            } else if ($final < $total) {
+                $sql = "UPDATE `Budget` SET `User_ID`= $id,`Amount`= $final, `Total_Budget`= $total, `Budget_Expense`= '$budget', `Saving` = 'Yes', `ExpenseType_ID`= $type,`Source_ID`= $source,`Frequency_ID`= $frequency,`Update_Date`= '$date' WHERE ID = $logID";
+                update($conn, $sql, $directPage);
+
+                $sql = "INSERT INTO `DailyExpense_Log`(`User_ID`, `Amount`, `Expense`, `Source_ID`, `ExpenseType_ID`, `Expense_Date`) VALUES ($id, $final, '$budget', $source, $type, '" . date("Y-m-d") . "')";
+                
+                if (mysqli_query($conn, $sql)) {
+                    $_SESSION["insert"] = true;
+                } else {
+                    error($conn, $sql, $header);
+                }
+
+                recalculate($conn, $source, $amount, $directPage);
+            }
+        }
 
         if ($amount != 0) {
             $sql = "INSERT INTO `DailyExpense_Log`(`User_ID`, `Amount`, `Expense`, `Source_ID`, `ExpenseType_ID`, `Expense_Date`) VALUES ($id, $amount, '$budget', $source, $type, '$date')";
@@ -63,7 +119,7 @@
         $sql = "UPDATE `Source_Fund` SET `User_ID`= $id, `Name`= '$name', `Asset_ID`= $type WHERE ID = $logID";
         update($conn, $sql, $directPage);
 
-        $sql = "UPDATE `Income` SET `Income`= '$name' WHERE `Source_ID` = $logID AND ID = $id";
+        $sql = "UPDATE `Income_Log` SET `Income`= '$name' WHERE `Source_ID` = $logID AND `ID` = $id";
         update($conn, $sql, $directPage);
         header("Location: $directPage.php");
         exit();
@@ -76,6 +132,8 @@
         $sql = "UPDATE `Wishlist` SET `User_ID`= $id, `Item`= '$name', `Amount`= $amount, `Shop`= '$shop' WHERE ID = $logID";
 
         update($conn, $sql, $directPage);
+        header("Location: $directPage.php");
+        exit();
     } else if (isset($_REQUEST['income'])) {
         $logID = $_POST['edit_ID'];
         $date = formatDate($_POST['date']);
@@ -122,9 +180,10 @@
         }
     }
 
-    function formatDate($date){
-        list($month, $day, $year) = explode('-', $date);
-        return "$year-$month-$day";
+    function formatDate($dateString){
+        $date = date_create($dateString);
+
+        return date_format($date,"Y-m-d");
     }
 
     function error($conn, $sql, $header) {

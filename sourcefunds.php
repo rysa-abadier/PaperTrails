@@ -57,7 +57,7 @@
     function addFunds($conn) {
         echo '<form action="insert.php" method="POST">';
             echo '<tr><td style="width: 35%; padding-left: 4.90%;"><input type="text" name="name" placeholder="Source Fund" required /></td>';
-            echo '<td style="width: 30%;">P <input style="width: 95.85%;" type="text" name="amount" placeholder="Amount" required /></td>';
+            echo '<td style="width: 30%;">P <input style="width: 95.50%;" type="text" name="amount" placeholder="Amount" required /></td>';
 
             echo '<td style="width: 30%;"><select name="type" required>';
             $ctr = 1;

@@ -71,7 +71,7 @@
                         echo '<input type="hidden" name="date" value="' . $row["Income_Date"] . '">';
                         echo '<input type="hidden" name="initial" value="' . $row["Amount"] . '">';
                         echo '<tr><td>' . $row["Income_Date"] . '</td>';
-                        echo '<td>P <input type="text" name="final" value="' . $row["Amount"] . '" /></td>';
+                        echo '<td>P <input style="width: 93.85%" type="text" name="final" value="' . $row["Amount"] . '" /></td>';
                         echo '<td><input type="text" name="name" value="' . $row["Income"] . '" /></td>';
                         
                         echo '<td><select name="source">';

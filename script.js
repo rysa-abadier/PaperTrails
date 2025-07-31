@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
     const editForm = document.querySelector(".edit-row");
     const deleteForm = document.querySelector(".delete-row");
+    const buyItem = document.querySelector(".buy-row");
 
     if (editForm) {
         document.addEventListener('keydown', function(event) {

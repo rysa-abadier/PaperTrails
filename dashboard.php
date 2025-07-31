@@ -49,7 +49,7 @@
                                 <li><a class="dropdown-item" href="fundsPage.php">Source Funds</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="calendarPage.php">Calendar</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="calendarPage.php">Calendar</a></li> -->
                     </ul>
 
                     <span class="navbar-text" style="color: #F6F6EE;">HELLO, <strong><?php echo $_SESSION['name']; ?></strong> !</span>
