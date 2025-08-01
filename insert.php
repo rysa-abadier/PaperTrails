@@ -31,17 +31,16 @@
 
         $sql = "INSERT INTO `DailyExpense_Log`(`User_ID`, `Amount`, `Expense`, `Budget`, `Source_ID`, `ExpenseType_ID`, `Expense_Date`) VALUES ($id, $amount, '$expense', '$budget', $source, $type, '$date')";
 
-        insert($conn, $sql, $directPage);
-
-        if ($saving) {
-            budget($conn, $_POST["expense"], -$amount, $directPage);
-            expense($conn, $source, $amount, $directPage);
-        } else {
-            budget($conn, $_POST["expense"], $amount, $directPage);
-
-            header("Location: $directPage.php");
-            exit();
+        if (is_numeric($_POST["expense"])) {
+            if ($saving) {
+                budget($conn, $_POST["expense"], -$amount, $directPage);
+            } else {
+                budget($conn, $_POST["expense"], $amount, $directPage);
+            }
         }
+
+        insert($conn, $sql, $directPage);
+        expense($conn, $source, $amount, $directPage);
     } else if (isset($_REQUEST['budget'])) {
         $budget = $_POST['budgetExpense'];
         $amount = $_POST['saved'] == null ? 0 : $_POST['saved'];

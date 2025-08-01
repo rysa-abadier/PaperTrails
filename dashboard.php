@@ -9,6 +9,8 @@
         echo '<script>alert("Login successful!");</script>';
         unset($_SESSION['login']);
     }
+
+    $_SESSION["page"] = "dashboard";
 ?>
 
 <!DOCTYPE html>
