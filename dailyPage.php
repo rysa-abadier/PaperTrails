@@ -60,7 +60,7 @@
                     <ul class="navbar-nav navbar-nav-scroll" style="--bs-scroll-height: 100px;">
                         <li class="nav-item dropdown"><a class="nav-link disable-hover" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0 0 0 0.5rem;"><i class="bi bi-person-circle fs-3" style="color: white;"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="profile.php">Profile</a></li>
+                                <!-- <li><a class="dropdown-item" href="profile.php">Profile</a></li> -->
                                 <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                             </ul>
                         </li>
