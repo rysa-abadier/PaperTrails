@@ -54,6 +54,7 @@
     
     <body class="d-flex align-items-center">
         <div class="card mx-auto p-2" style="width: 20%; background: white; border-radius: 0.75rem;">
+            <h2 class="mx-auto mt-3">PaperTrails</h2>
             <form action="register.php" method="POST" class="card-body p-2 mx-auto" style="width: 75%; background: white;">
                 First Name: <input type="text" name="fname" /><br>
                 Last Name: <input type="text" name="lname" /><br>
