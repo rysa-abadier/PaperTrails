@@ -89,31 +89,84 @@
             <div class="vr my-5 mx-3"></div>
 
             <div class="d-flex flex-row-reverse py-4" style="width: 40%;">
-                <div class="d-inline" id="chart1" style="width: 20em; height: 18em;"></div>
-                <div class="d-inline" id="chart2" style="width: 20em; height: 18em;"></div>
+                <div class="d-inline" id="expenseChart" style="width: 20em; height: 18em;"></div>
+                <div class="d-inline" id="savingsChart" style="width: 20em; height: 18em;"></div>
                     <script>
+                        let total = 0;
+
                         google.charts.load("current", { packages: ["corechart"] });
                         google.charts.setOnLoadCallback(drawCharts);
 
                         function drawCharts() {
-                            const data1 = google.visualization.arrayToDataTable([
-                                ['Task', 'Hours per Day'],
-                                ['Work', 8],
-                                ['Eat', 2],
-                                ['TV', 4],
-                                ['Gym', 2],
-                                ['Sleep', 8]
+                            const expenseChartData = google.visualization.arrayToDataTable([
+                                ['Expenses', 'Overall Count'],
+
+                                <?php
+                                    $expenseCount = [
+                                        "Living Expenses" => 0,
+                                        "Transportation" => 0,
+                                        "Personal Care" => 0,
+                                        "Family Care" => 0,
+                                        "Debt Payments" => 0,
+                                        "Healthcare" => 0,
+                                        "Technology" => 0,
+                                        "Savings and Investments" => 0,
+                                        "Others" => 0,
+                                    ]; 
+
+                                    $sql = "SELECT e.Name, COUNT(d.ExpenseType_ID) AS Reference_Count FROM DailyExpense_Log d LEFT JOIN Expenses e ON d.ExpenseType_ID = e.ID GROUP BY e.Name;";
+                                    $result = mysqli_query($conn, $sql);
+
+                                    if (mysqli_num_rows($result) > 0) {
+                                        while($row = mysqli_fetch_assoc($result)) {
+                                            $expenseCount = [$row["Name"] => $row["Reference_Count"]];
+                                        }
+                                    } 
+
+                                    $lastKey = array_key_last($expenseCount);
+                                    foreach ($expenseCount as $expense => $count) {
+                                        echo '["' . $expense . '", ' . $count . ']';
+
+                                        if ($expense !== $lastKey) {
+                                            echo ',';
+                                        }
+                                    }
+                                ?>
                             ]);
 
-                            const data2 = google.visualization.arrayToDataTable([
-                                ['Category', 'Amount'],
-                                ['Food', 300],
-                                ['Rent', 700],
-                                ['Utilities', 200],
-                                ['Transport', 150]
+                            const savingsChartData = google.visualization.arrayToDataTable([
+                                ['Savings', 'Amount'],
+
+                                <?php
+                                    $savedAmount = [];
+                                    $total = 0;
+
+                                    $sql = "SELECT `Budget_Expense`, `Amount`, `Total_Budget` FROM Budget WHERE `ExpenseType_ID` = 8";
+                                    $result = mysqli_query($conn, $sql);
+
+                                    if (mysqli_num_rows($result) > 0) {
+                                        while($row = mysqli_fetch_assoc($result)) {
+                                            $total += $row["Total_Budget"];
+
+                                            $savedAmount = [$row["Budget_Expense"] = $row["Amount"]];
+                                        }
+                                    } 
+
+                                    $lastKey = array_key_last($savedAmount);
+                                    foreach ($savedAmount as $savings => $amount) {
+                                        echo '["' . $savings . '", ' . $amount . ']';
+
+                                        if ($savings !== $lastKey) {
+                                            echo ',';
+                                        }
+                                    }
+
+                                    echo "total = $total";
+                                ?>
                             ]);
 
-                            const options1 = {
+                            const expenseChartOptions = {
+                                title: 'Expenses Breakdown',
                                 pieHole: 0.4,
                                 colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
                                 chartArea: {width: '100%', height: '90%', left: 0},
@@ -121,7 +174,8 @@
                                 backgroundColor: 'transparent'
                             };
 
-                            const options2 = {
+                            const savingsChartOptions = {
+                                title: 'Savings Overview (₱' + total.toLocaleString() + ')',
                                 pieHole: 0.4,
                                 colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
                                 chartArea: {width: '100%', height: '90%', left: 0},
@@ -129,11 +183,11 @@
                                 backgroundColor: 'transparent'
                             };
 
-                            const chart1 = new google.visualization.PieChart(document.getElementById('chart1'));
-                            const chart2 = new google.visualization.PieChart(document.getElementById('chart2'));
+                            const expenseChart = new google.visualization.PieChart(document.getElementById('expenseChart'));
+                            const savingsChart = new google.visualization.PieChart(document.getElementById('savingsChart'));
 
-                            chart1.draw(data1, options1);
-                            chart2.draw(data2, options2);
+                            expenseChart.draw(expenseChartData, expenseChartOptions);
+                            savingsChart.draw(savingsChartData, savingsChartOptions);
                         }
                     </script> 
             </div>

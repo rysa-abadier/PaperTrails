@@ -91,22 +91,50 @@
                 <div class="vr mx-3 my-4"></div>
 
                 <div class="d-flex flex-row-reverse py-2 me-3">
-                    <div class="d-inline" id="chart" style="width: 20em; height: 15em;"></div>
+                    <div class="d-inline" id="budget" style="width: 20em; height: 15em;"></div>
                         <script>
                             google.charts.load("current", { packages: ["corechart"] });
                             google.charts.setOnLoadCallback(drawChart);
 
                             function drawChart() {
-                                const data = google.visualization.arrayToDataTable([
-                                    ['Task', 'Hours per Day'],
-                                    ['Work', 8],
-                                    ['Eat', 2],
-                                    ['TV', 4],
-                                    ['Gym', 2],
-                                    ['Sleep', 8]
+                                const budgetData = google.visualization.arrayToDataTable([
+                                    ['Budget', 'Expense Count'],
+
+                                    <?php
+                                        $budgetCount = [
+                                            "Living Expenses" => 0,
+                                            "Transportation" => 0,
+                                            "Personal Care" => 0,
+                                            "Family Care" => 0,
+                                            "Debt Payments" => 0,
+                                            "Healthcare" => 0,
+                                            "Technology" => 0,
+                                            "Savings and Investments" => 0,
+                                            "Others" => 0,
+                                        ]; 
+
+                                        $sql = "SELECT e.Name, COUNT(b.ExpenseType_ID) AS Reference_Count FROM Budget b LEFT JOIN Expenses e ON b.ExpenseType_ID = e.ID GROUP BY e.Name;";
+                                        $result = mysqli_query($conn, $sql);
+
+                                        if (mysqli_num_rows($result) > 0) {
+                                            while($row = mysqli_fetch_assoc($result)) {
+                                                $budgetCount = [$row["Name"] => $row["Reference_Count"]];
+                                            }
+                                        } 
+
+                                        $lastKey = array_key_last($budgetCount);
+                                        foreach ($budgetCount as $budget => $count) {
+                                            echo '["' . $budget . '", ' . $count . ']';
+
+                                            if ($budget !== $lastKey) {
+                                                echo ',';
+                                            }
+                                        }
+                                    ?>
                                 ]);
 
-                                const options = {
+                                const budgetOptions = {
+                                    title: 'Budget Breakdown',
                                     pieHole: 0.4,
                                     colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
                                     chartArea: {width: '100%', height: '90%', left: 0},
@@ -114,9 +142,9 @@
                                     backgroundColor: 'transparent'
                                 };
 
-                                const chart = new google.visualization.PieChart(document.getElementById('chart'));
+                                const budget = new google.visualization.PieChart(document.getElementById('budget'));
 
-                                chart.draw(data, options);
+                                budget.draw(budgetData, budgetOptions);
                             }
                         </script> 
                 </div>
