@@ -94,8 +94,6 @@
                 <div class="d-inline" id="expenseChart" style="width: 20em; height: 18em;"></div>
                 <div class="d-inline" id="savingsChart" style="width: 20em; height: 18em;"></div>
                     <script>
-                        let total = 0;
-
                         google.charts.load("current", { packages: ["corechart"] });
                         google.charts.setOnLoadCallback(drawCharts);
 
@@ -104,34 +102,33 @@
                                 ['Expenses', 'Overall Count'],
 
                                 <?php
-                                    $expenseCount = [
-                                        "Living Expenses" => 0,
-                                        "Transportation" => 0,
-                                        "Personal Care" => 0,
-                                        "Family Care" => 0,
-                                        "Debt Payments" => 0,
-                                        "Healthcare" => 0,
-                                        "Technology" => 0,
-                                        "Savings and Investments" => 0,
-                                        "Others" => 0,
-                                    ]; 
+                                    $expenseCount = []; 
 
                                     $sql = "SELECT e.Name, COUNT(d.ExpenseType_ID) AS Reference_Count FROM DailyExpense_Log d LEFT JOIN Expenses e ON d.ExpenseType_ID = e.ID GROUP BY e.Name;";
                                     $result = mysqli_query($conn, $sql);
 
                                     if (mysqli_num_rows($result) > 0) {
                                         while($row = mysqli_fetch_assoc($result)) {
-                                            $expenseCount = [$row["Name"] => $row["Reference_Count"]];
+                                            $expenseCount[$row["Name"]] = (int) $row["Reference_Count"];
                                         }
-                                    } 
+                                    } else {
+                                        $expenseCount = [
+                                            "Living Expenses" => 0.00001,
+                                            "Transportation" => 0.00001,
+                                            "Personal Care" => 0.00001,
+                                            "Family Care" => 0.00001,
+                                            "Debt Payments" => 0.00001,
+                                            "Healthcare" => 0.00001,
+                                            "Technology" => 0.00001,
+                                            "Savings and Investments" => 0.00001,
+                                            "Others" => 0.00001,
+                                        ]; 
+                                    }
 
                                     $lastKey = array_key_last($expenseCount);
                                     foreach ($expenseCount as $expense => $count) {
                                         echo '["' . $expense . '", ' . $count . ']';
-
-                                        if ($expense !== $lastKey) {
-                                            echo ',';
-                                        }
+                                        if ($expense !== $lastKey) echo ',';
                                     }
                                 ?>
                             ]);
@@ -143,27 +140,22 @@
                                     $savedAmount = [];
                                     $total = 0;
 
-                                    $sql = "SELECT `Budget_Expense`, `Amount`, `Total_Budget` FROM Budget WHERE `ExpenseType_ID` = 8";
+                                    $sql = "SELECT `Budget_Expense`, `Amount` FROM Budget WHERE `ExpenseType_ID` = 8";
                                     $result = mysqli_query($conn, $sql);
 
                                     if (mysqli_num_rows($result) > 0) {
                                         while($row = mysqli_fetch_assoc($result)) {
-                                            $total += $row["Total_Budget"];
-
-                                            $savedAmount = [$row["Budget_Expense"] = $row["Amount"]];
+                                            $savedAmount[$row["Budget_Expense"]] = (double) $row["Amount"];
                                         }
-                                    } 
+                                    } else {
+                                        $savedAmount = ["No Savings" => 0.00001];
+                                    }
 
                                     $lastKey = array_key_last($savedAmount);
                                     foreach ($savedAmount as $savings => $amount) {
                                         echo '["' . $savings . '", ' . $amount . ']';
-
-                                        if ($savings !== $lastKey) {
-                                            echo ',';
-                                        }
+                                        if ($savings !== $lastKey) echo ',';
                                     }
-
-                                    echo "total = $total";
                                 ?>
                             ]);
 
@@ -177,7 +169,7 @@
                             };
 
                             const savingsChartOptions = {
-                                title: 'Savings Overview (₱' + total.toLocaleString() + ')',
+                                title: 'Savings Overview',
                                 pieHole: 0.4,
                                 colors: ['#748459', '#A3B18A', '#C7C4BA', '#588157', '#344E41'],
                                 chartArea: {width: '100%', height: '90%', left: 0},

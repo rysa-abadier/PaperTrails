@@ -91,7 +91,7 @@
                 <div class="vr mx-3 my-4"></div>
 
                 <div class="d-flex flex-row-reverse py-2 me-3">
-                    <div class="d-inline" id="budget" style="width: 20em; height: 15em;"></div>
+                    <div class="d-inline m-2" id="budget" style="width: 19em; height: 17em;"></div>
                         <script>
                             google.charts.load("current", { packages: ["corechart"] });
                             google.charts.setOnLoadCallback(drawChart);
@@ -101,34 +101,33 @@
                                     ['Budget', 'Expense Count'],
 
                                     <?php
-                                        $budgetCount = [
-                                            "Living Expenses" => 0,
-                                            "Transportation" => 0,
-                                            "Personal Care" => 0,
-                                            "Family Care" => 0,
-                                            "Debt Payments" => 0,
-                                            "Healthcare" => 0,
-                                            "Technology" => 0,
-                                            "Savings and Investments" => 0,
-                                            "Others" => 0,
-                                        ]; 
+                                        $budgetCount = [];
 
                                         $sql = "SELECT e.Name, COUNT(b.ExpenseType_ID) AS Reference_Count FROM Budget b LEFT JOIN Expenses e ON b.ExpenseType_ID = e.ID GROUP BY e.Name;";
                                         $result = mysqli_query($conn, $sql);
 
                                         if (mysqli_num_rows($result) > 0) {
                                             while($row = mysqli_fetch_assoc($result)) {
-                                                $budgetCount = [$row["Name"] => $row["Reference_Count"]];
+                                                $budgetCount[$row["Name"]] = $row["Reference_Count"];
                                             }
-                                        } 
+                                        } else {
+                                            $budgetCount = [
+                                                "Living Expenses" => 0.00001,
+                                                "Transportation" => 0.00001,
+                                                "Personal Care" => 0.00001,
+                                                "Family Care" => 0.00001,
+                                                "Debt Payments" => 0.00001,
+                                                "Healthcare" => 0.00001,
+                                                "Technology" => 0.00001,
+                                                "Savings and Investments" => 0.00001,
+                                                "Others" => 0.00001,
+                                            ]; 
+                                        }
 
                                         $lastKey = array_key_last($budgetCount);
                                         foreach ($budgetCount as $budget => $count) {
                                             echo '["' . $budget . '", ' . $count . ']';
-
-                                            if ($budget !== $lastKey) {
-                                                echo ',';
-                                            }
+                                            if ($budget !== $lastKey) echo ',';
                                         }
                                     ?>
                                 ]);
